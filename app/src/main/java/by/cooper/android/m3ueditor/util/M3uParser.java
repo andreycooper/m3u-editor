@@ -21,7 +21,12 @@ import rx.Observable;
 public final class M3uParser {
 
     public static final String TAG = "M3uParser";
-    public static final String CHANNEL_PATTERN = "EXTINF:(\\d+)\\slogo=\"(.*?)\",(.*?)\\n(.*?)\\n";
+    // TODO: use new regexp with optional logo
+    private static final String CHANNEL_PATTERN = "EXTINF:(\\d+)\\slogo=\"(.*?)\",(.*?)\\n(.*?)\\n";
+    private static final int NUMBER_GROUP = 1;
+    public static final int LOGO_GROUP = 3;
+    public static final int NAME_GROUP = 4;
+    public static final int PATH_GROUP = 5;
 
     public Observable<List<Track>> parseFile(String filename) {
         return Observable.just(readFile(filename))
@@ -63,10 +68,10 @@ public final class M3uParser {
 
     @NonNull
     private Track createTrack(Matcher matcher) {
-        String trackNumber = matcher.group(1);
-        String logo = matcher.group(2);
-        String name = matcher.group(3);
-        String path = matcher.group(4);
+        String trackNumber = matcher.group(NUMBER_GROUP);
+        String logo = matcher.group(LOGO_GROUP);
+        String name = matcher.group(NAME_GROUP);
+        String path = matcher.group(PATH_GROUP);
         Track track = new Track();
         track.setNumber(Integer.parseInt(trackNumber));
         track.setName(name);
